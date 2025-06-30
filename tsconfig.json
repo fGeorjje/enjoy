@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "module": "ESNext",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "target": "ESNext",
+        "noImplicitAny": true,
+        "sourceMap": true,
+        "baseUrl": ".",
+        "strictNullChecks": true,
+        "skipLibCheck": true
+    },
+    "include": [
+        "./**/*"
+    ]
+}
