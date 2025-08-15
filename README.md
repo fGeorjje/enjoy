@@ -19,7 +19,7 @@ Don't bother asking Discord Support either, they are legally unable to tell you 
 - Popout the active Discord voice call window and fullscreen it on a monitor
   - Popout monitor should be at a higher resolution than your stream
 - Import the provided OBS scene in obs-assets and build the rest of your layout around it
-- Run the server: `node .`git
+- Run the server: `node .`
 - Run init.js in the dev tools of the Discord popout window
 - Start watching streams and hopefully Discord streams start being automatically cropped
 
