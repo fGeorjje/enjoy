@@ -1,8 +1,8 @@
 import { entersState, joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice'
 import { BaseGuildVoiceChannel, ChannelType, Client, GatewayIntentBits } from 'discord.js'
-import { DISCORD_BOT_TOKEN, DISCORD_CHANNEL_ID, EMPTY_SLOTS } from './env'
-import { obs } from './obs'
-import { getCachedNames } from './socket/names'
+import { DISCORD_BOT_TOKEN, DISCORD_CHANNEL_ID } from './env'
+import { WebSocketServer } from 'ws'
+import { BrowserMessage } from '../shared/message'
 
 const client = new Client({
   intents: [
@@ -18,7 +18,11 @@ async function getChannel (): Promise<BaseGuildVoiceChannel> {
   return channel
 }
 
-export async function loginDiscord (): Promise<void> {
+export async function loginDiscord (browserSocketServer: WebSocketServer): Promise<void> {
+  if (DISCORD_BOT_TOKEN === '') {
+    console.log('No discord bot token provided. Name light ups will not work')
+    return
+  }
   await client.login(DISCORD_BOT_TOKEN)
   console.log('Logged into discord')
   const channel = await getChannel()
@@ -31,20 +35,14 @@ export async function loginDiscord (): Promise<void> {
   await entersState(connection, VoiceConnectionStatus.Ready, 10_000)
   const receiver = connection.receiver
   receiver.speaking.on('start', (userId: string) => {
-    void setSpeaking(userId, true)
+    void speaking(userId, true, browserSocketServer)
   })
   receiver.speaking.on('end', (userId: string) => {
-    void setSpeaking(userId, false)
+    void speaking(userId, false, browserSocketServer)
   })
 }
 
-function rgb (r: number, g: number, b: number): number {
-  return r + (g << 8) + (b << 16) + (255 << 24)
-}
-
-async function setSpeaking (userId: string, state: boolean): Promise<void> {
-  if (obs.identified !== true) return
-
+async function speaking (userId: string, talking: boolean, browserSocketServer: WebSocketServer): Promise<void> {
   const channel = await getChannel()
   const members = channel.guild.members
   let member = members.cache.get(userId)
@@ -52,14 +50,10 @@ async function setSpeaking (userId: string, state: boolean): Promise<void> {
     console.log('Fetching member', userId)
     member = await members.fetch(userId)
   }
-  const color: [number, number, number] = state ? [127, 255, 127] : [255, 255, 255]
-  const index = getCachedNames().findIndex((cached) => cached === member.displayName)
-  if (index === -1) return
-  const slot = index + 1 + EMPTY_SLOTS
-  await obs.call('SetInputSettings', {
-    inputName: `Player ${slot}`,
-    inputSettings: {
-      color: rgb(...color)
-    }
-  })
+  const displayName = member.displayName
+  const message: BrowserMessage = {
+    talkingData: { displayName, talking }
+  }
+  const text = JSON.stringify(message)
+  browserSocketServer.clients.forEach(client => client.send(text))
 }

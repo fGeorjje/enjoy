@@ -1,11 +1,12 @@
 {
     "compilerOptions": {
         "strict": true,
-        "module": "ESNext",
+        "module": "nodenext",
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "target": "ESNext",
         "noImplicitAny": true,
+        "moduleResolution": "nodenext",
         "sourceMap": true,
         "baseUrl": ".",
         "strictNullChecks": true,
