@@ -18,16 +18,8 @@ Don't bother asking Discord Support either, they are legally unable to tell you 
 - Enable Discord Dev tools by setting `"DANGEROUS_ENABLE_DEVTOOLS_ONLY_ENABLE_IF_YOU_KNOW_WHAT_YOURE_DOING": true` in %appdata%/discord/settings.json
 - Popout the active Discord voice call window and fullscreen it on a monitor
   - Popout monitor should be at a higher resolution than your stream
-- Create OBS scenes:
-  - Create 25 text sources named Player 1-25 (Player 1, Player 2, ..., Player 25)
-  - Create a window capture called "Discord" set to the pop out window
-  - Create copies of the Discord window capture
-    - Top of the source list is player 1, going downwards
-    - Each source must be original scale and constrained via bounding box, stretch to bounding box mode
-    - Scenes can have less than 25 discord captures
-  - Align the Player N text sources in order of the discord capture sources
-  - You probably want to make lots of scenes for different player counts
-- `node .`
+- Import the provided OBS scene in obs-assets and build the rest of your layout around it
+- Run the server: `node .`git
 - Run init.js in the dev tools of the Discord popout window
 - Start watching streams and hopefully Discord streams start being automatically cropped
 
